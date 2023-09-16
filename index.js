@@ -27,7 +27,7 @@ app.post("/canciones", async (req, res) => {
     const canciones = JSON.parse(jsonCanciones);
     canciones.push(cancionNueva);
     await fs.writeFileSync("canciones.json", JSON.stringify(canciones));
-    res.send('canción agregada')
+    res.send("canción agregada");
   } catch (error) {
     console.log(error);
   }
@@ -42,13 +42,25 @@ app.put("/canciones/:id", async (req, res) => {
     const index = canciones.findIndex((p) => p.id == id);
     canciones[index] = cancionNueva;
     fs.writeFileSync("canciones.json", JSON.stringify(canciones));
-    res.send('cancion modificada con éxito')
+    res.send("cancion modificada con éxito");
   } catch (error) {
     console.log(error);
   }
 });
 
-app.delete('/canciones/:id')
+app.delete("/canciones/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const jsonCanciones = fs.readFileSync("canciones.json", "utf-8");
+    const canciones = JSON.parse(jsonCanciones);
+    const index = canciones.findIndex((p) => p.id == id);
+    canciones.splice(index, 1);
+    fs.writeFileSync("canciones.json", JSON.stringify(canciones));
+    res.send("cancion eliminada");
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
